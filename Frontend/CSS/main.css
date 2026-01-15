@@ -42,4 +42,12 @@
             border-radius: 50%;
             border: 2px solid white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+    }
+.footer-card{
+            border-top: 1px solid #eee;
+    }
+
+        
+        @media (max-width: 1024px) { .masonry-wrapper { column-count: 3; } }
+        @media (max-width: 768px) { .masonry-wrapper { column-count: 2; } }
+        @media (max-width: 480px) { .masonry-wrapper { column-count: 1; } }
