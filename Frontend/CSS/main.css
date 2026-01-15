@@ -21,3 +21,9 @@
             column-count: 4; 
             column-gap: 1.5rem;
     }
+.masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            width: 100%;
+    }
