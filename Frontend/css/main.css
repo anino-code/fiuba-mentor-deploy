@@ -20,6 +20,8 @@
 .masonry-wrapper {
         column-count: 4; 
         column-gap: 1.5rem;
+        max-width: 1600px;
+        margin: 0 auto;
     }
 .masonry-item {
         break-inside: avoid;
@@ -56,7 +58,8 @@
         width: 100%;
         text-align: center;
 }
-        
+
+        @media (min-width: 1400px) {.masonry-wrapper {column-count: 4; }}
         @media (max-width: 1024px) { .masonry-wrapper { column-count: 3; } }
         @media (max-width: 768px) { .masonry-wrapper { column-count: 2; } }
         @media (max-width: 480px) { .masonry-wrapper { column-count: 1; } }
