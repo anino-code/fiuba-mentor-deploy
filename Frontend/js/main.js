@@ -27,8 +27,11 @@ async function cargarCard() {
 function renderizarCards(publicaciones){
     cardContainer.innerHTML = ' ';
 
+    let htmlAcomulado ='';
+
     publicaciones.forEach(pub => {
-            const cardHTML = `
+
+            htmlAcomulado += `
                 <div class="masonry-item">
                     <div class="card">
                         <div class="card-image">
@@ -61,7 +64,7 @@ function renderizarCards(publicaciones){
                     </div>
                 </div>
             `;
-                cardContainer.innerHTML += cardHTML;
+                cardContainer.innerHTML = htmlAcomulado;
         });
 }
 
