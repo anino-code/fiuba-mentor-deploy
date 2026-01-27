@@ -46,6 +46,13 @@ function renderizarCards(publicaciones){
                             <p class="content is-size-6 has-text-grey mb-4">
                                 ${pub.desc}
                             </p>
+                            
+                        <div class="buttons are-small mt-3">
+                            <button class="button is-link is-outlined btn-contactar " data-id="${pub.id}">
+                                Contactar
+                            </button>
+                            
+                        </div>
 
                             <div class="media is-vcentered border-top pt-3 footer-card">
                                 <div class="media-left">
