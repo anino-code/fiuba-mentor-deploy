@@ -17,6 +17,9 @@
         border-radius: 20px;
         overflow: hidden;
     }
+    .btn-post{
+        color: #eee;
+    }
 .masonry-wrapper {
         column-count: 4; 
         column-gap: 1.5rem;
