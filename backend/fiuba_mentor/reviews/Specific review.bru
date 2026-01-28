@@ -1,0 +1,16 @@
+meta {
+  name: Specific review
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:4000/reviews/id:review
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

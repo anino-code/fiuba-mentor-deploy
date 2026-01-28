@@ -1,0 +1,15 @@
+meta {
+  name: Delete review
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:4000/reviews/id_review
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
