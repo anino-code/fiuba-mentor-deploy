@@ -4,7 +4,6 @@ create table users (
     apellido varchar(20) not null,
     carrera varchar(100) not null,
     email varchar(100) not null,
-    telefono varchar(20),
     foto_perfil text
 );
 
