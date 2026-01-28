@@ -8,20 +8,37 @@ app.use(cors());
 
 // Ruta de prueba
 app.get("/", (req, res) => {
-  res.json({ message: "Backend funcionando" });
+  //res.json({ message: "Backend funcionando" });
+  res.sendFile(path.join(__dirname, "../Frontend/html/index.html"));
 });
 
-app.get("/users", async (req, res) => {
-    try {
-        const result = await pool.query("SELECT * FROM users");
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "DB error" });
-    }
+//GET. /FORMULARIOS
+app.get("/formularios", (req, res) => {
+
 });
 
-const PORT = process.env.PORT || 3000;
+//GET. /FORMULARIOS/<NOMBRE>
+app.get("/formularios/:id_formulario", (req, res) => {
+
+});
+
+//POST. /FORMULARIOS
+app.post("/formularios", (req, res) => {
+
+});
+
+//DELETE. /FORMULARIOS/<NOMBRE>
+app.delete("/formularios/:id_formulario", (req, res) => {
+
+});
+
+//si uso pathch no necesito mandarle todo para actualizar, con put si
+//PUT. /FORMULARIOS/<NOMBRE>
+app.put("/formularios/:id_formulario", (req, res) => {
+
+});
+
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);
 });
