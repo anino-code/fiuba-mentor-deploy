@@ -8,8 +8,7 @@ app.use(cors());
 
 // Ruta de prueba
 app.get("/", (req, res) => {
-  //res.json({ message: "Backend funcionando" });
-  res.sendFile(path.join(__dirname, "../Frontend/html/index.html"));
+
 });
 
 //GET. /FORMULARIOS
@@ -37,6 +36,34 @@ app.delete("/formularios/:id_formulario", (req, res) => {
 app.put("/formularios/:id_formulario", (req, res) => {
 
 });
+
+//GET. /USUARIOS
+app.get("/usuarios", (req, res) => {
+
+});
+
+//GET. /USUARIOS/<NOMBRE>
+app.get("/usuarios/:id_usuario", (req, res) => {
+
+});
+
+//POST. /USUARIOS
+app.post("/usuarios", (req, res) => {
+
+});
+
+
+//DELETE. /USUARIOS/<NOMBRE>
+app.delete("/usuarios/:id_usuario", (req, res) => {
+
+});
+
+//si uso pathch no necesito mandarle todo para actualizar, con put si
+//PUT. /USUARIOS/<NOMBRE>
+app.put("/usuarios/:id_usuario", (req, res) => {
+
+});
+
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
