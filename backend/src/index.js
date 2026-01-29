@@ -7,38 +7,38 @@ app.use(express.json());
 app.use(cors());
 
 // Ruta de prueba
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
 
 });
 
 //GET. /FORMULARIOS
-app.get("/forms", (req, res) => {
+app.get("/api/forms", (req, res) => {
 
 });
 
 //GET. /FORMULARIOS/<NOMBRE>
-app.get("/forms/:id_form", (req, res) => {
+app.get("/api/forms/:id_form", (req, res) => {
 
 });
 
 //POST. /FORMULARIOS
-app.post("/forms", (req, res) => {
+app.post("/api/forms", (req, res) => {
 
 });
 
 //DELETE. /FORMULARIOS/<NOMBRE>
-app.delete("/forms/:id_form", (req, res) => {
+app.delete("/api/forms/:id_form", (req, res) => {
 
 });
 
 //si uso pathch no necesito mandarle todo para actualizar, con put si
 //PUT. /FORMULARIOS/<NOMBRE>
-app.put("/forms/:id_form", (req, res) => {
+app.put("/api/forms/:id_form", (req, res) => {
 
 });
 
 //GET. /USUARIOS
-app.get("/users", (req, res) => {
+app.get("/api/users", (req, res) => {
 
 });
 
@@ -48,46 +48,46 @@ app.get("/users/:id_user", (req, res) => {
 });
 
 //POST. /USUARIOS
-app.post("/users", (req, res) => {
+app.post("/api/users", (req, res) => {
 
 });
 
 
 //DELETE. /USUARIOS/<NOMBRE>
-app.delete("/users/:id_user", (req, res) => {
+app.delete("/api/users/:id_user", (req, res) => {
 
 });
 
 //si uso pathch no necesito mandarle todo para actualizar, con put si
 //PUT. /USUARIOS/<NOMBRE>
-app.put("/users/:id_user", (req, res) => {
+app.put("/api/users/:id_user", (req, res) => {
 
 });
 
 //GET. /REVIEWS
-app.get("/reviews", (req, res) => {
+app.get("/api/reviews", (req, res) => {
 
 });
 
 //GET. /REVIEWS/<NOMBRE>
-app.get("/reviews/:id_review", (req, res) => {
+app.get("/api/reviews/:id_review", (req, res) => {
 
 });
 
 //POST. /REVIEWS
-app.post("/reviews", (req, res) => {
+app.post("/api/reviews", (req, res) => {
 
 });
 
 
 //DELETE. /REVIEWS/<NOMBRE>
-app.delete("/reviews/:id_review", (req, res) => {
+app.delete("/api/reviews/:id_review", (req, res) => {
 
 });
 
 //si uso pathch no necesito mandarle todo para actualizar, con put si
 //PUT. /REVIEWS/<NOMBRE>
-app.put("/reviews/:id_review", (req, res) => {
+app.put("/api/reviews/:id_review", (req, res) => {
 
 });
 
