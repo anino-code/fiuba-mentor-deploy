@@ -8,7 +8,7 @@ app.use(cors());
 
 // Ruta de prueba
 app.get("/api", (req, res) => {
-
+  res.json({ status: 'OK'});
 });
 
 //GET. /FORMULARIOS
