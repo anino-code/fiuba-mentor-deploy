@@ -24,3 +24,9 @@ create table reviews (
     aura int not null,
     descripcion varchar(255) not null
 );
+
+insert into users (nombre, apellido, carrera, email) values ('esteban', 'ordoñez', 'ing informatica', 'eordonez@fi.uba.ar'),
+
+insert into forms (id_user, materia, tema, descripcion, tipo) values (2, 'introCamejo', 'el backend', 'mil vueltas', 'mentor')
+
+insert into reviews (id_form, id_puntuado, id_puntuador, aura, descripcion) values (1, 1, 2, 10, 'gran tipazo')
