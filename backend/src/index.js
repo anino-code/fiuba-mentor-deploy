@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { pool, getAllUsers } from "./db.js";
+import { pool, getAllUsers, getOneUser} from "./db.js";
 
 const app = express();
 app.use(express.json());
@@ -23,15 +23,23 @@ app.get("/api/users", async (req, res) => {
 });
 
 //GET. /USUARIOS/<NOMBRE>
-app.get("/users/:id_user", (req, res) => {
-  res.json({ status: 'OK'});
+app.get("/api/users/:id_user", async (req, res) => {
+  try {
+    const user = await getOneUser(req.params.id_user);
+    if(!user) {
+      return res.status(404).json({ error: 'User no encontrado'});
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error en GET /api/users/id_user/:", error);
+    res.status(500).json({ error: "Error al obtener usuario deceado" });
+  }
 });
 
 //POST. /USUARIOS
 app.post("/api/users", (req, res) => {
   res.json({ status: 'OK'});
 });
-
 
 //DELETE. /USUARIOS/<NOMBRE>
 app.delete("/api/users/:id_user", (req, res) => {
