@@ -28,8 +28,9 @@ create table reviews (
     fecha_creado timestamp default now()
 );
 
+/*Crear user*/
 insert into users (nombre, apellido, carrera, email) values ('esteban', 'ordoñez', 'ing informatica', 'eordonez@fi.uba.ar'),
-
-insert into forms (id_user, materia, tema, descripcion, tipo) values (2, 'introCamejo', 'el backend', 'mil vueltas', 'mentor')
-
-insert into reviews (id_form, id_puntuado, id_puntuador, aura, descripcion) values (1, 1, 2, 10, 'gran tipazo')
+/*Crear form*/
+insert into forms (id_user, materia, tema, descripcion, tipo) values (7, 'introCamejo', 'el backend', 'mil vueltas', 'mentor')
+/*Crear review*/
+insert into reviews (id_form, id_puntuador, aura, descripcion) values (1, 8, 10, 'gran tipazo')

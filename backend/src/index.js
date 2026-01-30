@@ -226,11 +226,10 @@ app.post("/api/reviews", async (req, res) => {
       return res.status(400).json({ error: 'Por favor completa el body.'});
     }
     const id_form = req.body.id_form;
-    const id_puntuado = req.body.id_puntuado;
     const id_puntuador = req.body.id_puntuador;
     const aura = req.body.aura;
     const descripcion = req.body.descripcion;
-    if (!id_form || !id_puntuado || !id_puntuador || !aura || !descripcion) {
+    if (!id_form || !id_puntuador || !aura || !descripcion) {
       return res.status(400).json({ error: 'Por favor completa todos los campos obligatorios.'});
     }
     const review = await createReview(id_form, id_puntuado, id_puntuador, aura, descripcion)
