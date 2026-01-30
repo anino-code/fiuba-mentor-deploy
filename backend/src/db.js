@@ -15,6 +15,9 @@ export async function getAllUsers() {
 
 export async function getOneUser(id_user) {
   const result = await pool.query('SELECT * FROM users WHERE id_user = $1 LIMIT 1', [id_user]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
   return result.rows[0];
 }
 
