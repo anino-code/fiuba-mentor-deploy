@@ -17,3 +17,12 @@ export async function getOneUser(id_user) {
   const result = await pool.query('SELECT * FROM users WHERE id_user = $1 LIMIT 1', [id_user]);
   return result.rows[0];
 }
+
+export async function createUser(nombre, apellido, carrera, email, foto_user) {
+  const result = await pool.query('INSERT INTO  users(nombre, apellido, carrera, email, foto_user) VALUES ($1, $2, $3, $4, $5) RETURNING *', [nombre, apellido, carrera, email, foto_user]);
+  console.log("result", result.rows[0]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  return result.rows[0];
+}

@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { pool, getAllUsers, getOneUser} from "./db.js";
+import { pool, getAllUsers, getOneUser, createUser} from "./db.js";
 
 const app = express();
 app.use(express.json());
@@ -18,7 +18,7 @@ app.get("/api/users", async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     console.error("Error en GET /api/users:", error);
-    res.status(500).json({ error: "Error al obtener usuarios" });
+    res.status(500).json({ error: "DB users error" });
   }
 });
 
@@ -36,13 +36,40 @@ app.get("/api/users/:id_user", async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     console.error("Error en GET /api/users/id_user/:", error);
-    res.status(500).json({ error: "Error al obtener usuario deseado" });
+    res.status(500).json({ error: "DB users error" });
   }
 });
 
 //POST. /USUARIOS
-app.post("/api/users", (req, res) => {
-  res.json({ status: 'OK'});
+/*
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"nombre":"esteban","apellido":"ordoñez","carrera":"ing informatica","email":"eordonez@fi.uba.ar","foto_user":""}' \
+  http://localhost:3000/api/users
+*/
+app.post("/api/users", async (req, res) => {
+  try {
+    if (req.body === undefined) {
+      return res.status(400).json({ error: 'Por favor completa el body.'});
+    }
+    const nombre = req.body.nombre;
+    const apellido = req.body.apellido;
+    const carrera = req.body.carrera;
+    const email = req.body.email;
+    const foto_user = req.body.foto_user;
+
+    if (!nombre || !apellido || !carrera || !email) {
+      return res.status(400).json({ error: 'Por favor completa todos los campos obligatorios.'});
+    }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      return res.status(400).json({ error: "Email inválido" });
+    }
+    const user = await createUser(nombre, apellido, carrera, email, foto_user)
+    res.status(201).json(user);
+  } catch (error) {
+    console.error("Error en POST /api/users/:", error);
+    res.status(500).json({ error: 'Fallo al crear user' });
+  }
 });
 
 //DELETE. /USUARIOS/<NOMBRE>
