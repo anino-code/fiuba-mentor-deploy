@@ -14,16 +14,18 @@ create table forms (
     tema varchar(100) not null,
     descripcion varchar(255) not null,
     tipo varchar(12) not null,
-    foto_form text
+    estado varchar(10) not null default 'visible',
+    foto_form text,
+    fecha_creado timestamp default now()
 );
 
 create table reviews (
     id_reviews serial primary key,
     id_form int not null references forms(id_form) on delete cascade,
-    id_puntuado int not null references users(id_user) on delete cascade,
     id_puntuador int not null references users(id_user) on delete cascade,
-    aura int not null,
-    descripcion varchar(255) not null
+    aura int not null default 0,
+    descripcion varchar(255) not null,
+    fecha_creado timestamp default now()
 );
 
 insert into users (nombre, apellido, carrera, email) values ('esteban', 'ordoñez', 'ing informatica', 'eordonez@fi.uba.ar'),
