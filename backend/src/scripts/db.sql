@@ -13,7 +13,7 @@ create table forms (
     materia varchar(100) not null,
     tema varchar(100) not null,
     descripcion varchar(255) not null,
-    tipo varchar(12) not null
+    tipo varchar(12) not null,
     foto_form text
 );
 

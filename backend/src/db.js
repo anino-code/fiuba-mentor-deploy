@@ -67,3 +67,33 @@ export async function deleteForm(id_form) {
   }
   return result.rows[0];
 }
+
+export async function getAllReviews() {
+  const result = await pool.query('SELECT * FROM reviews');
+  return result.rows;
+}
+
+export async function getOneReview(id_review) {
+  const result = await pool.query('SELECT * FROM reviews WHERE id_reviews = $1 LIMIT 1', [id_review]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  return result.rows[0];
+}
+
+export async function createReview(id_form, id_puntuado, id_puntuador, aura, descripcion) {
+  const result = await pool.query('INSERT INTO  reviews(id_form, id_puntuado, id_puntuador, aura, descripcion) VALUES ($1, $2, $3, $4, $5) RETURNING *', [id_form, id_puntuado, id_puntuador, aura, descripcion]);
+  console.log("result", result.rows[0]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  return result.rows[0];
+}
+
+export async function deleteReview(id_review) {
+  const result = await pool.query('DELETE FROM reviews WHERE id_reviews = $1 RETURNING *', [id_review]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  return result.rows[0];
+}

@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { pool, getAllUsers, getOneUser, createUser, deleteUser, getAllForms, getOneForm, createForm, deleteForm } from "./db.js";
+import { pool, getAllUsers, getOneUser, createUser, deleteUser, getAllForms, getOneForm, createForm, deleteForm, getAllReviews, getOneReview, createReview, deleteReview } from "./db.js";
 
 const app = express();
 app.use(express.json());
@@ -153,6 +153,9 @@ app.post("/api/forms", async (req, res) => {
     res.status(201).json(form);
   } catch (error) {
     console.error("Error en POST /api/forms/:", error);
+    if (error.code === "23503") { 
+      return res.status(400).json({ error: "id_user no existe" });
+    }
     res.status(500).json({ error: 'Fallo al crear form' });
   }
 });
@@ -182,23 +185,81 @@ app.put("/api/forms/:id_form", (req, res) => {
 });
 
 //GET. /REVIEWS
-app.get("/api/reviews", (req, res) => {
-  res.json({ status: 'OK'});
+app.get("/api/reviews", async (req, res) => {
+  try {
+    const reviews = await getAllReviews();
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error("Error en GET /api/reviews:", error);
+    res.status(500).json({ error: "DB reviews error" });
+  }
 });
 
 //GET. /REVIEWS/<NOMBRE>
-app.get("/api/reviews/:id_review", (req, res) => {
-  res.json({ status: 'OK'});
+app.get("/api/reviews/:id_review", async (req, res) => {
+    try {
+    const idReview = Number(req.params.id_review);
+    if (!Number.isInteger(idReview)) {
+      return res.status(400).json({ error: "Review invalido" });
+    }
+    const review = await getOneReview(idReview);
+    if(!review) {
+      return res.status(404).json({ error: 'Review no encontrado'});
+    }
+    res.status(200).json(review);
+  } catch (error) {
+    console.error("Error en GET /api/reviews/id_review/:", error);
+    res.status(500).json({ error: "DB reviews error" });
+  }
 });
 
 //POST. /REVIEWS
-app.post("/api/reviews", (req, res) => {
-  res.json({ status: 'OK'});
+/*
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"id_form":18,"id_puntuado":8,"id_puntuador":9,"aura":10,"descripcion":"descripcion"}' \
+  http://localhost:3000/api/reviews
+*/
+app.post("/api/reviews", async (req, res) => {
+  try {
+    if (req.body === undefined) {
+      return res.status(400).json({ error: 'Por favor completa el body.'});
+    }
+    const id_form = req.body.id_form;
+    const id_puntuado = req.body.id_puntuado;
+    const id_puntuador = req.body.id_puntuador;
+    const aura = req.body.aura;
+    const descripcion = req.body.descripcion;
+    if (!id_form || !id_puntuado || !id_puntuador || !aura || !descripcion) {
+      return res.status(400).json({ error: 'Por favor completa todos los campos obligatorios.'});
+    }
+    const review = await createReview(id_form, id_puntuado, id_puntuador, aura, descripcion)
+    res.status(201).json(review);
+  } catch (error) {
+    console.error("Error en POST /api/reviews/:", error);
+    if (error.code === "23503") { 
+      return res.status(400).json({ error: "Algun ID no existe" });
+    }
+    res.status(500).json({ error: 'Fallo al crear review' });
+  }
 });
 
 //DELETE. /REVIEWS/<NOMBRE>
-app.delete("/api/reviews/:id_review", (req, res) => {
-  res.json({ status: 'OK'});
+app.delete("/api/reviews/:id_review", async (req, res) => {
+  try {
+    const idReview = Number(req.params.id_review);
+    if (!Number.isInteger(idReview)) {
+      return res.status(400).json({ error: "Review invalido" });
+    }
+    const review = await deleteReview(idReview);
+    if(!review) {
+      return res.status(404).json({ error: 'Review no encontrado'});
+    }
+    res.status(200).json(review);
+  } catch (error) {
+    console.error("Error en DELETE /api/reviews/id_review/:", error);
+    res.status(500).json({ error: "DB reviews error" });
+  }
 });
 
 //si uso pathch no necesito mandarle todo para actualizar, con put si
