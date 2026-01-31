@@ -12,7 +12,6 @@ const inputBuscador = document.getElementById('input-buscador-remitente');
 const listaSugerencias = document.getElementById('lista-sugerencias');
 const inputOcultoId = document.getElementById('input-remitente-id');
 
-// Función que verifica que se escriba almenos una letra
 function contieneLetra(texto) {
   return /[a-zA-Z]/.test(texto);
 }
@@ -37,15 +36,16 @@ form.addEventListener('submit', async function(event) {
   }
 
   const datos = {
-    remitente_id: remitenteId,
+    id_user: parseInt(remitenteId),
     materia: materia,
     tema: tema,
     descripcion: descripcion,
-    tipo_post: tipoPost
+    tipo: tipoPost,
+    foto_form: ""
   };
 
   try {
-    const respuesta = await fetch('http://localhost:3000/api/solicitudes', {
+    const respuesta = await fetch('http://localhost:3000/api/forms', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(datos)
@@ -53,14 +53,14 @@ form.addEventListener('submit', async function(event) {
 
     const resultado = await respuesta.json();
 
-    if (resultado.success) {
+    if (respuesta.ok) {
       mensajeExito.style.display = "block";
       mensajeExito.textContent = resultado.message || "¡Solicitud enviada correctamente!";
       form.reset();
       inputBuscador.value = "";
       inputOcultoId.value = "";
     } else {
-      alert("Hubo un problema al enviar la solicitud.");
+      alert("Hubo un problema al enviar la solicitud: " + (resultado.error || "Error desconocido"));
     }
   } catch (error) {
     console.error("Error al enviar:", error);
@@ -111,3 +111,4 @@ function seleccionarUsuario(id, nombre) {
   inputOcultoId.value = id;
   listaSugerencias.style.display = 'none';
 }
+
