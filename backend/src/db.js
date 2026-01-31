@@ -39,7 +39,7 @@ export async function deleteUser(id_user) {
 }
 
 export async function getAllForms() {
-  const result = await pool.query('SELECT f.*, u.* FROM forms f INNER JOIN users u ON f.id_user = u.id_user');
+  const result = await pool.query('SELECT f.*, u.*, COALESCE(SUM(r.aura), 0) AS aura FROM forms f INNER JOIN users u ON f.id_user = u.id_user LEFT JOIN reviews r ON r.id_puntuado = u.id_user GROUP BY f.id_form, u.id_user');
   return result.rows.map(r => ({
     id_form: r.id_form,
     materia: r.materia,
@@ -55,13 +55,14 @@ export async function getAllForms() {
       apellido: r.apellido,
       carrera: r.carrera,
       email: r.email,
-      foto_user: r.foto_user
+      foto_user: r.foto_user,
+      aura: r.aura
     }
   }));
 }
 
 export async function getOneForm(id_form) {
-  const result = await pool.query('SELECT f.*, u.* FROM forms f INNER JOIN users u ON f.id_user = u.id_user WHERE id_form = $1 LIMIT 1', [id_form]);
+  const result = await pool.query('SELECT f.*, u.*, COALESCE(SUM(r.aura), 0) AS aura FROM forms f INNER JOIN users u ON f.id_user = u.id_user LEFT JOIN reviews r ON r.id_puntuado = u.id_user WHERE id_form = $1 GROUP BY f.id_form, u.id_user LIMIT 1', [id_form]);
   if (result.rowCount === 0) {
     return undefined;
   }
@@ -81,7 +82,8 @@ export async function getOneForm(id_form) {
       apellido: r.apellido,
       carrera: r.carrera,
       email: r.email,
-      foto_user: r.foto_user
+      foto_user: r.foto_user,
+      aura: r.aura
     }
   };
 }
