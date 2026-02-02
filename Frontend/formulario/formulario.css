@@ -67,6 +67,11 @@ input:focus, textarea:focus, select:focus {
   background: #2759a5;
 }
 
+.help.is-danger {
+  display: none;
+  transition: opacity 0.3s ease;
+}
+
 #mensajeExito {
   margin-top: 15px;
   padding: 12px;
@@ -76,6 +81,13 @@ input:focus, textarea:focus, select:focus {
   color: #155724;
   border: 1px solid #c3e6cb;
   display: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+#mensajeExito.show {
+  display: block;
+  opacity: 1;
 }
 
 .position-relative { 
@@ -127,5 +139,15 @@ input:focus, textarea:focus, select:focus {
 .column .imagen-lateral:hover {
   transform: scale(1.02);
   box-shadow: 0 12px 20px rgba(0,0,0,0.45);
+}
+
+.card-solicitud {
+  margin-top: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-solicitud:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.25);
 }
 

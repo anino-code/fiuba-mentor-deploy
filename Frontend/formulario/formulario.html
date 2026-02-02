@@ -50,21 +50,25 @@
               </div>
               <div id="lista-sugerencias" class="dropdown-content custom-dropdown-list"></div>
               <input type="hidden" id="input-remitente-id" name="remitente_id">
+              <p class="help is-danger" id="errorRemitente"></p>
             </div>
 
             <div class="field">
               <label for="materia" class="label-gradient">Nombre de la materia</label>
               <input class="input" type="text" id="materia" name="materia" required>
+              <p class="help is-danger" id="errorMateria"></p>
             </div>
 
             <div class="field">
               <label for="tema" class="label-gradient">Tema</label>
               <input class="input" type="text" id="tema" name="tema" required>
+              <p class="help is-danger" id="errorTema"></p>
             </div>
 
             <div class="field">
               <label for="descripcion" class="label-gradient">Descripción</label>
               <textarea class="textarea" id="descripcion" name="descripcion" required></textarea>
+              <p class="help is-danger" id="errorDescripcion"></p>
             </div>
 
             <div class="field">
@@ -78,15 +82,21 @@
                   </select>
                 </div>
               </div>
+              <p class="help is-danger" id="errorTipo"></p>
             </div>
 
             <div class="field">
-              <button type="submit" class="button is-link is-fullwidth is-rounded">Enviar</button>
+              <button type="submit" class="button is-link is-fullwidth is-rounded">
+                <span class="icon"><i class="fas fa-paper-plane"></i></span>
+                <span>Enviar</span>
+              </button>
             </div>
           </form>
 
           <div id="mensajeExito">¡Solicitud enviada correctamente!</div>
         </div>
+
+        <div id="contenedorSolicitudes"></div>
       </div>
 
       <div class="column is-half has-text-centered">
