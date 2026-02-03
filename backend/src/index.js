@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { pool, getAllUsers, getOneUser, createUser, deleteUser, getAllForms, getOneForm, createForm, deleteForm, getAllReviews, getOneReview, createReview, deleteReview } from "./db.js";
+import { pool, getAllUsers, getOneUser, createUser, deleteUser, getAllForms, getOneForm, createForm, deleteForm, getAllReviews, getOneReview, createReview, deleteReview, getReviewsUser} from "./db.js";
 
 const app = express();
 app.use(express.json());
@@ -235,6 +235,24 @@ app.get("/api/reviews/:id_review", async (req, res) => {
     res.status(200).json(review);
   } catch (error) {
     console.error("Error en GET /api/reviews/id_review/:", error);
+    res.status(500).json({ error: "DB reviews error" });
+  }
+});
+
+//GET. /REVIEWS/<USER>
+app.get("/api/reviews/:id_user", async (req, res) => {
+    try {
+    const idUser = Number(req.params.id_user);
+    if (!Number.isInteger(idUser)) {
+      return res.status(400).json({ error: "User invalido" });
+    }
+    const user = await getReviewsUser(idUser);
+    if(!user) {
+      return res.status(404).json({ error: 'User no encontrado'});
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error en GET /api/reviews/id_user/:", error);
     res.status(500).json({ error: "DB reviews error" });
   }
 });
