@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { pool, getAllUsers, getOneUser, createUser, deleteUser, getAllForms, getOneForm, createForm, deleteForm, getAllReviews, getOneReview, createReview, deleteReview, getReviewsUser} from "./db.js";
+import { pool, getAllUsers, getOneUser, createUser, deleteUser, updateUser, getAllForms, getOneForm, createForm, deleteForm, getAllReviews, getOneReview, createReview, deleteReview, getReviewsUser} from "./db.js";
 
 const app = express();
 app.use(express.json());
@@ -106,8 +106,47 @@ app.delete("/api/users/:id_user", async (req, res) => {
 
 //si uso pathch no necesito mandarle todo para actualizar, con put si
 //PUT. /USUARIOS/<NOMBRE>
-app.put("/api/users/:id_user", (req, res) => {
-  res.json({ status: 'OK'});
+app.put("/api/users/:id_user", async (req, res) => {
+  try {
+    const idUser = Number(req.params.id_user);
+    if (!Number.isInteger(idUser)) {
+      return res.status(400).json({ error: "User invalido" });
+    }
+    if (req.body === undefined) {
+      return res.status(400).json({ error: 'Por favor completa el body.'});
+    }
+    const nombre = req.body.nombre;
+    const apellido = req.body.apellido;
+    const carrera = req.body.carrera;
+    const email = req.body.email;
+    const foto_user = req.body.foto_user;
+    if (!nombre || !apellido || !carrera || !email) {
+      return res.status(400).json({ error: 'Por favor completa todos los campos obligatorios.'});
+    }
+    if (nombre.length > 20) {
+      return res.status(400).json({ error: "Maximo nombre son 20 caracteres" });
+    }
+    if (apellido.length > 20) {
+      return res.status(400).json({ error: "Maximo apellido son 20 caracteres" });
+    }
+    if (carrera.length > 100) {
+      return res.status(400).json({ error: "Maximo carrera son 100 caracteres" });
+    }
+    if (email.length > 100) {
+      return res.status(400).json({ error: "Maximo email son 100 caracteres" });
+    }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      return res.status(400).json({ error: "Email inválido" });
+    }
+    const user = await updateUser(idUser, nombre, apellido, carrera, email, foto_user)
+    if(!user) {
+      return res.status(404).json({ error: 'User no encontrado'});
+    }
+    res.status(201).json(user);
+  } catch (error) {
+    console.error("Error en POST /api/users/:", error);
+    res.status(500).json({ error: 'Fallo al crear user' });
+  }
 });
 
 //GET. /FORMULARIOS
