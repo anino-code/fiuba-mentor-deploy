@@ -26,82 +26,126 @@ async function cargarCard() {
 
 cardContainer.addEventListener('click', (e) => {
 
-    const btnAura = e.target.closest('.btn-aura');
+const btnAura = e.target.closest('.btn-aura');
     if (btnAura) {
-        const id = btnAura.dataset.id;
-        manejarAura(id, btnAura);
+        
+        const idUsuario = btnAura.dataset.userid; 
+        
+        
+        manejarAura(idUsuario, btnAura);
     }
 
         
     
-    const btnContactar = e.target.closest('.btn-contactar');
-    if (btnContactar) {
-        const id = btnContactar.dataset.id;
-        manejarContacto(id);
+const btnContactar = e.target.closest('.btn-contactar');
+if (btnContactar) {
+    const idUsuario = btnContactar.dataset.userid; 
+    if (idUsuario) {
+        manejarContacto(idUsuario);
     }
+}
 
     
 });
 
-async function manejarContacto(id) {
+
+const modal = document.getElementById('modal-contacto');
+const modalNombre = document.getElementById('modal-nombre');
+const modalCarrera = document.getElementById('modal-carrera');
+const modalEmail = document.getElementById('modal-email');
+
+
+async function manejarContacto(idUsuario) {
+    console.log(` Conectando con Backend para buscar ID: ${idUsuario}...`);
+
     try {
-        console.log(` Conectando con base de datos para buscar ID: ${id}...`);
-
-        const response = await fetch('../js/data/data.json'); 
         
-        if (!response.ok) throw new Error("No se pudo leer el archivo de datos");
+        if(modal) modal.classList.add('is-active');
+        if(modalNombre) modalNombre.textContent = "Buscando mentor...";
+        if(modalEmail) modalEmail.textContent = "...";
 
-        const listaMentores = await response.json();
+        const response = await fetch(`http://localhost:3000/api/users/${idUsuario}`);
 
-        const contacto = listaMentores.find(item => item.id === Number(id));
-
-        if (!contacto) {
-            throw new Error(`No se encontró información para el ID ${id}`);
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Error al obtener datos");
         }
 
-        const mensaje = `
-        CONTACTO RECIBIDO DE DATA.JSON:
-        -------------------------------
-        Mentor: ${contacto.mentor}
-        Materia: ${contacto.materia}
-        Email: ${contacto.email || "No especificado"}
         
-        `;
+        const usuario = await response.json();
 
-        alert(mensaje);
+        
+        if(modalNombre) modalNombre.textContent = `${usuario.nombre} ${usuario.apellido}`;
+        if(modalCarrera) modalCarrera.textContent = usuario.carrera || "Carrera no especificada";
+        
+        if(modalEmail) {
+            modalEmail.textContent = usuario.email;
+            modalEmail.href = `mailto:${usuario.email}`;
+        }
 
     } catch (error) {
-        console.error("Error de lógica:", error);
-        alert("Hubo un error al intentar contactar al mentor.");
+        console.error("Error de conexión:", error);
+        if(modalNombre) modalNombre.textContent = "Error";
+        if(modalCarrera) modalCarrera.textContent = "No se pudo cargar la información.";
+        alert("Hubo un problema: " + error.message);
+        cerrarModal();
     }
 }
 
-async function manejarAura(id, boton) {
+
+function cerrarModal() {
+    if(modal) modal.classList.remove('is-active');
+}
+
+document.getElementById('btn-cerrar-modal')?.addEventListener('click', cerrarModal);
+document.getElementById('btn-cancelar-modal')?.addEventListener('click', cerrarModal);
+document.querySelector('.modal-background')?.addEventListener('click', cerrarModal);
+
+async function manejarAura(idUsuario, boton) {
     
+    if (!idUsuario) return console.error("Error: No hay ID de usuario");
+
+
     boton.classList.add('is-loading');
-    boton.disabled = true;
+    
+    
+    const textoOriginal = boton.innerText;
 
     try {
-        
-        await new Promise(r => setTimeout(r, 800)); 
-        
-        
-        const tagAura = document.getElementById(`aura-tag-${id}`);
-        
-        let valorActual = parseInt(tagAura.innerText.split('+')[1]);
-        let nuevoValor = valorActual + 10;
+        console.log(`✨ Sumando aura al usuario ${idUsuario}...`);
 
+        const response = await fetch('http://localhost:3000/api/reviews', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id_puntuado: Number(idUsuario), 
+                id_puntuador: 1,                
+                aura: 10,
+                descripcion: "¡Aura desde la web!"
+            })
+        });
 
-        tagAura.innerText = `Aura +${nuevoValor}`;
-        tagAura.classList.remove('is-light'); 
-        tagAura.classList.add('is-warning');
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "Error en servidor");
+        }
+
+        
+        
+        let valorNumerico = parseInt(textoOriginal.replace(/\D/g, '')) || 0;
+        let nuevoValor = valorNumerico + 10;
+
+        boton.innerText = `Aura +${nuevoValor}`;
+        boton.classList.remove('is-light');
+        boton.classList.add('is-warning'); 
 
     } catch (error) {
-        console.error("Error al dar aura", error);
+        console.error("Fallo el aura:", error);
+        alert(error.message); 
+        boton.innerText = textoOriginal; 
     } finally {
-        
         boton.classList.remove('is-loading');
-        boton.disabled = false;
     }
 }
 
@@ -155,6 +199,8 @@ function renderizarCards(publicaciones){
     let htmlAcomulado ='';
 
     publicaciones.forEach(pub => {
+
+    const usuario = pub.usuario || { nombre: 'Anonimo', id_user: 0, aura: 0 };
     
     const imagenPortada = pub.foto_form || 
                         obtenerImagenPorTexto(pub.materia) || 
@@ -179,7 +225,10 @@ function renderizarCards(publicaciones){
                             </p>
                             
                         <div class="buttons are-small mt-3">
-                            <button class="button is-link is-outlined btn-contactar " data-id="${pub.id_form}">
+                            <button 
+                                class="button is-link btn-contactar" 
+                                data-id="${pub.id_form}"
+                                data-userid="${usuario.id_user}">
                                 Contactar
                             </button>
                             
@@ -197,9 +246,7 @@ function renderizarCards(publicaciones){
                                 <div class="media-right">
                                     <span 
                                         class="tag is-light is-rounded is-small aura-interactiva btn-aura" 
-                                        data-id="${pub.id_form}"
-                                        id="aura-tag-${pub.id_form}">
-                                        Aura +${pub.usuario.aura || 10}
+                                        data-userid="${usuario.id_user}"  id="aura-tag-${pub.id_form}">    Aura +${usuario.aura || 10}
                                     </span>
                                 </div>
                             </div>
