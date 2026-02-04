@@ -359,6 +359,9 @@ app.post("/api/reviews", async (req, res) => {
     if (!Number.isInteger(id_puntuador)) {
       return res.status(400).json({ error: "ID Puntuador invalido" });
     }
+    if (id_puntuado === id_puntuador) {
+      return res.status(400).json({ error: "Users iguales" });
+    }
     if (!Number.isInteger(aura)) {
       return res.status(400).json({ error: "Aura invalido" });
     }
@@ -416,6 +419,9 @@ app.put("/api/reviews/:id_review", async (req, res) => {
     }
     if (!Number.isInteger(id_puntuador)) {
       return res.status(400).json({ error: "ID Puntuador invalido" });
+    }
+    if (id_puntuado === id_puntuador) {
+      return res.status(400).json({ error: "Users iguales" });
     }
     if (!Number.isInteger(aura)) {
       return res.status(400).json({ error: "Aura invalido" });
