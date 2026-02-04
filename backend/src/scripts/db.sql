@@ -14,7 +14,6 @@ create table forms (
     tema varchar(100) not null,
     descripcion varchar(255) not null,
     tipo varchar(12) not null,
-    estado varchar(10) not null default 'visible',
     foto_form text,
     fecha_creado timestamp default now()
 );
