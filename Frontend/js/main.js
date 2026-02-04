@@ -105,7 +105,48 @@ async function manejarAura(id, boton) {
     }
 }
 
+const CATEGORIAS_IMAGENES = [
+    {
+        
+        palabrasClave: ['Fundamentos de programación','introcamejo', 'punteros', 'memoria', 'malloc', 'segfault', 'linux', 'bash', 'terminal'],
+        url: 'https://fi.ort.edu.uy/innovaportal/file/127831/1/lenguajes-de-programacion.jpg'
+    },
+    {
+        
+        palabrasClave: ['el backend', 'bd', 'sql', 'base de datos', 'postgres', 'node', 'express', 'api', 'servidor'],
+        url: 'https://images.unsplash.com/photo-1667372393119-c85c020799dc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+    },
+    {
+        
+        palabrasClave: ['front', 'css', 'html', 'diseño', 'flexbox', 'grid', 'javascript'],
+        url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&auto=format&fit=crop&q=60'
+    },
+    {
+        
+        palabrasClave: ['Gradientes', 'algo', 'algoritmos', 'matematica', 'calculo', 'algebra', 'grafos', 'logica','Analisis Matematico 2'],
+        url: 'https://cms.fi.uba.ar/uploads/large_Galeria_PC_05_08c39ef5dd.jpg'
+    }
+];
 
+const IMAGEN_DEFAULT = 'https://www.uba.ar/storage/VHmQvvhSdMb9fxh3k5e4At0XS2BAnOdx7n1PcYkJ.jpg';
+
+function obtenerImagenPorTexto(textoUsuario) {
+    
+    if (!textoUsuario) return null; 
+
+    
+    const textoLimpio = textoUsuario.toLowerCase(); 
+
+    for (const categoria of CATEGORIAS_IMAGENES) {
+        const coincide = categoria.palabrasClave.some(palabra => textoLimpio.includes(palabra));
+        
+        if (coincide) {
+            return categoria.url; 
+        }
+    }
+
+    return null; 
+}
 
 
 function renderizarCards(publicaciones){
@@ -114,13 +155,19 @@ function renderizarCards(publicaciones){
     let htmlAcomulado ='';
 
     publicaciones.forEach(pub => {
-
+    
+    const imagenPortada = pub.foto_form || 
+                        obtenerImagenPorTexto(pub.materia) || 
+                        obtenerImagenPorTexto(pub.tema) || 
+                        obtenerImagenPorTexto(pub.descripcion) || 
+                        IMAGEN_DEFAULT;
+    
             htmlAcomulado += `
                 <div class="masonry-item">
                     <div class="card">
                         <div class="card-image">
                             <figure class="image is-4by3">
-                                <img src="${pub.foto_form}" alt="Imagen clase" style="object-fit: cover;">
+                                <img src="${imagenPortada}" alt="${pub.tema}" style="object-fit: cover;">
                             </figure>
                         </div>
                         
