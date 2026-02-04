@@ -140,6 +140,16 @@ export async function getAllReviews() {
   }));
 }
 
+export async function updateForm(id_form, id_user, materia, tema, descripcion, tipo, foto_form) {
+  const result = await pool.query('UPDATE forms SET id_user=$2, materia=$3, tema=$4, descripcion=$5, tipo=$6, foto_form=$7 WHERE id_form = $1 RETURNING *', [id_form, id_user, materia, tema, descripcion, tipo, foto_form]);
+  console.log("result", result.rows[0]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  return result.rows[0];
+}
+
+
 export async function getOneReview(id_review) {
   const result = await pool.query('SELECT r.*, pu.id_user AS puntuado_id, pu.nombre AS puntuado_nombre, pu.apellido AS puntuado_apellido, pu.carrera AS puntuado_carrera, pu.email AS puntuado_email, pu.foto_user AS puntuado_foto_user, pr.id_user AS puntuador_id, pr.nombre AS puntuador_nombre, pr.apellido AS puntuador_apellido, pr.carrera AS puntuador_carrera, pr.email AS puntuador_email, pr.foto_user AS puntuador_foto_user FROM reviews r JOIN users pu ON r.id_puntuado = pu.id_user JOIN users pr ON r.id_puntuador = pr.id_user WHERE id_review = $1 LIMIT 1', [id_review]);
   if (result.rowCount === 0) {
