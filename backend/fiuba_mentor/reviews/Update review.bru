@@ -5,13 +5,18 @@ meta {
 }
 
 put {
-  url: http://localhost:3000/api/reviews/:id_review
-  body: none
+  url: http://localhost:3000/api/reviews/16
+  body: json
   auth: inherit
 }
 
-params:path {
-  id_review: 
+body:json {
+  {
+    "id_puntuado": 8,
+    "id_puntuador": 7,
+    "aura": 17,
+    "descripcion": "mil vueas"
+  }
 }
 
 settings {

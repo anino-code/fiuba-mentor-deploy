@@ -211,7 +211,7 @@ export async function getReviewsUser(id_user) {
 }
 
 export async function createReview(id_puntuado, id_puntuador, aura, descripcion) {
-  const result = await pool.query('INSERT INTO  reviews(id_puntuado, id_puntuador, aura, descripcion) VALUES ($1, $2, $3, $4) RETURNING *', [id_puntuado, id_puntuador, aura, descripcion]);
+  const result = await pool.query('INSERT INTO reviews(id_puntuado, id_puntuador, aura, descripcion) VALUES ($1, $2, $3, $4) RETURNING *', [id_puntuado, id_puntuador, aura, descripcion]);
   console.log("result", result.rows[0]);
   if (result.rowCount === 0) {
     return undefined;
@@ -221,6 +221,15 @@ export async function createReview(id_puntuado, id_puntuador, aura, descripcion)
 
 export async function deleteReview(id_review) {
   const result = await pool.query('DELETE FROM reviews WHERE id_review = $1 RETURNING *', [id_review]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  return result.rows[0];
+}
+
+export async function updateReview(id_review, id_puntuado, id_puntuador, aura, descripcion) {
+  const result = await pool.query('UPDATE reviews SET id_puntuado=$2, id_puntuador=$3, aura=$4, descripcion=$5 WHERE id_review = $1 RETURNING *', [id_review, id_puntuado, id_puntuador, aura, descripcion]);
+  console.log("result", result.rows[0]);
   if (result.rowCount === 0) {
     return undefined;
   }
