@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { pool, getAllUsers, getOneUser, createUser, deleteUser, updateUser, getAllForms, getOneForm, createForm, deleteForm, updateForm, getAllReviews, getOneReview, createReview, deleteReview, getReviewsUser} from "./db.js";
+import { pool, getAllUsers, getOneUser, createUser, deleteUser, updateUser, getAllForms, getOneForm, createForm, deleteForm, updateForm, getAllReviews, getOneReview, createReview, deleteReview, updateReview, getReviewsUser} from "./db.js";
 
 const app = express();
 app.use(express.json());
@@ -104,7 +104,6 @@ app.delete("/api/users/:id_user", async (req, res) => {
   }
 });
 
-//si uso pathch no necesito mandarle todo para actualizar, con put si
 //PUT. /USUARIOS/<NOMBRE>
 app.put("/api/users/:id_user", async (req, res) => {
   try {
@@ -243,7 +242,6 @@ app.delete("/api/forms/:id_form", async (req, res) => {
   }
 });
 
-//si uso pathch no necesito mandarle todo para actualizar, con put si
 //PUT. /FORMULARIOS/<NOMBRE>
 app.put("/api/forms/:id_form", async (req, res) => {
   try {
@@ -399,10 +397,47 @@ app.delete("/api/reviews/:id_review", async (req, res) => {
   }
 });
 
-//si uso pathch no necesito mandarle todo para actualizar, con put si
 //PUT. /REVIEWS/<NOMBRE>
-app.put("/api/reviews/:id_review", (req, res) => {
-  res.json({ status: 'OK'});
+app.put("/api/reviews/:id_review", async (req, res) => {
+  try {
+    const idReview = Number(req.params.id_review);
+    if (!Number.isInteger(idReview)) {
+      return res.status(400).json({ error: "Review invalido" });
+    }
+    if (req.body === undefined) {
+      return res.status(400).json({ error: "Por favor completa el body."});
+    }
+    const id_puntuado = req.body.id_puntuado;
+    const id_puntuador = req.body.id_puntuador;
+    const aura = req.body.aura;
+    const descripcion = req.body.descripcion;
+    if (!Number.isInteger(id_puntuado)) {
+      return res.status(400).json({ error: "ID Puntuado invalido" });
+    }
+    if (!Number.isInteger(id_puntuador)) {
+      return res.status(400).json({ error: "ID Puntuador invalido" });
+    }
+    if (!Number.isInteger(aura)) {
+      return res.status(400).json({ error: "Aura invalido" });
+    }
+    if (descripcion.length > 255) {
+      return res.status(400).json({ error: "Maximo descripcion son 255 caracteres" });
+    }
+    if (!id_puntuado || !id_puntuador || !aura || !descripcion) {
+      return res.status(400).json({ error: "Por favor completa todos los campos obligatorios." });
+    }
+    const review = await updateReview(idReview, id_puntuado, id_puntuador, aura, descripcion)
+    if(!review) {
+      return res.status(404).json({ error: "Review no encontrado" });
+    }
+    res.status(201).json(review);
+  } catch (error) {
+    console.error("Error en POST /api/reviews/:", error);
+    if (error.code === "23503") { 
+      return res.status(400).json({ error: "Algun ID no existe" });
+    }
+    res.status(500).json({ error: "Fallo al actualizar review" });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
