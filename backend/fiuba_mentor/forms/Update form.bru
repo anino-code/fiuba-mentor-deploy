@@ -5,9 +5,19 @@ meta {
 }
 
 put {
-  url: http://localhost:3000/api/forms/id_form
-  body: none
+  url: http://localhost:3000/api/forms/19
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "id_user": 7,
+    "materia": "introCamejo",
+    "tema": "el backend",
+    "descripcion": "mil vueltas",
+    "tipo": "mentor"
+  }
 }
 
 settings {

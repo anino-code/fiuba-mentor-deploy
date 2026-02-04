@@ -22,7 +22,7 @@ export async function getOneUser(id_user) {
 }
 
 export async function createUser(nombre, apellido, carrera, email, foto_user) {
-  const result = await pool.query('INSERT INTO  users(nombre, apellido, carrera, email, foto_user) VALUES ($1, $2, $3, $4, $5) RETURNING *', [nombre, apellido, carrera, email, foto_user]);
+  const result = await pool.query('INSERT INTO users(nombre, apellido, carrera, email, foto_user) VALUES ($1, $2, $3, $4, $5) RETURNING *', [nombre, apellido, carrera, email, foto_user]);
   console.log("result", result.rows[0]);
   if (result.rowCount === 0) {
     return undefined;
@@ -32,6 +32,15 @@ export async function createUser(nombre, apellido, carrera, email, foto_user) {
 
 export async function deleteUser(id_user) {
   const result = await pool.query('DELETE FROM users WHERE id_user = $1 RETURNING *', [id_user]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  return result.rows[0];
+}
+
+export async function updateUser(id_user, nombre, apellido, carrera, email, foto_user) {
+  const result = await pool.query('UPDATE users SET nombre=$2, apellido=$3, carrera=$4, email=$5, foto_user=$6 WHERE id_user = $1 RETURNING *', [id_user, nombre, apellido, carrera, email, foto_user]);
+  console.log("result", result.rows[0]);
   if (result.rowCount === 0) {
     return undefined;
   }
@@ -131,6 +140,15 @@ export async function getAllReviews() {
   }));
 }
 
+export async function updateForm(id_form, id_user, materia, tema, descripcion, tipo, foto_form) {
+  const result = await pool.query('UPDATE forms SET id_user=$2, materia=$3, tema=$4, descripcion=$5, tipo=$6, foto_form=$7 WHERE id_form = $1 RETURNING *', [id_form, id_user, materia, tema, descripcion, tipo, foto_form]);
+  console.log("result", result.rows[0]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  return result.rows[0];
+}
+
 export async function getOneReview(id_review) {
   const result = await pool.query('SELECT r.*, pu.id_user AS puntuado_id, pu.nombre AS puntuado_nombre, pu.apellido AS puntuado_apellido, pu.carrera AS puntuado_carrera, pu.email AS puntuado_email, pu.foto_user AS puntuado_foto_user, pr.id_user AS puntuador_id, pr.nombre AS puntuador_nombre, pr.apellido AS puntuador_apellido, pr.carrera AS puntuador_carrera, pr.email AS puntuador_email, pr.foto_user AS puntuador_foto_user FROM reviews r JOIN users pu ON r.id_puntuado = pu.id_user JOIN users pr ON r.id_puntuador = pr.id_user WHERE id_review = $1 LIMIT 1', [id_review]);
   if (result.rowCount === 0) {
@@ -161,8 +179,39 @@ export async function getOneReview(id_review) {
   };
 }
 
+export async function getReviewsUser(id_user) {
+  const result = await pool.query('SELECT u.id_user AS user_id, u.nombre AS user_nombre, u.apellido AS user_apellido, u.carrera AS user_carrera, u.email AS user_email, u.foto_user AS user_foto, r.*, pr.id_user AS puntuador_id, pr.nombre AS puntuador_nombre, pr.apellido AS puntuador_apellido, pr.carrera AS puntuador_carrera, pr.email AS puntuador_email, pr.foto_user AS puntuador_foto_user, COALESCE(SUM(r.aura) OVER (PARTITION BY u.id_user), 0) AS aura_total FROM users u LEFT JOIN reviews r ON r.id_puntuado = u.id_user Left JOIN users pr ON r.id_puntuador = pr.id_user WHERE u.id_user = $1 ORDER BY r.fecha_creado DESC', [id_user]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  const r = result.rows;
+  return {
+    id_user: r[0].user_id,
+    nombre: r[0].user_nombre,
+    apellido: r[0].user_apellido,
+    carrera: r[0].user_carrera,
+    email: r[0].user_email,
+    foto_user: r[0].user_foto,
+    aura_total: r[0].aura_total,
+    reviews: r.map(review => ({
+      id_review: review.id_review,
+      aura: review.aura,
+      descripcion: review.descripcion,
+      fecha_creado: review.fecha_creado,
+      puntuador: {
+        id_user: review.puntuador_id,
+        nombre: review.puntuador_nombre,
+        apellido: review.puntuador_apellido,
+        carrera: review.puntuador_carrera,
+        email: review.puntuador_email,
+        foto_user: review.puntuador_foto_user
+      }
+    }))
+  };
+}
+
 export async function createReview(id_puntuado, id_puntuador, aura, descripcion) {
-  const result = await pool.query('INSERT INTO  reviews(id_puntuado, id_puntuador, aura, descripcion) VALUES ($1, $2, $3, $4) RETURNING *', [id_puntuado, id_puntuador, aura, descripcion]);
+  const result = await pool.query('INSERT INTO reviews(id_puntuado, id_puntuador, aura, descripcion) VALUES ($1, $2, $3, $4) RETURNING *', [id_puntuado, id_puntuador, aura, descripcion]);
   console.log("result", result.rows[0]);
   if (result.rowCount === 0) {
     return undefined;
@@ -172,6 +221,15 @@ export async function createReview(id_puntuado, id_puntuador, aura, descripcion)
 
 export async function deleteReview(id_review) {
   const result = await pool.query('DELETE FROM reviews WHERE id_review = $1 RETURNING *', [id_review]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  return result.rows[0];
+}
+
+export async function updateReview(id_review, id_puntuado, id_puntuador, aura, descripcion) {
+  const result = await pool.query('UPDATE reviews SET id_puntuado=$2, id_puntuador=$3, aura=$4, descripcion=$5 WHERE id_review = $1 RETURNING *', [id_review, id_puntuado, id_puntuador, aura, descripcion]);
+  console.log("result", result.rows[0]);
   if (result.rowCount === 0) {
     return undefined;
   }
