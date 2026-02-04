@@ -22,7 +22,7 @@ export async function getOneUser(id_user) {
 }
 
 export async function createUser(nombre, apellido, carrera, email, foto_user) {
-  const result = await pool.query('INSERT INTO  users(nombre, apellido, carrera, email, foto_user) VALUES ($1, $2, $3, $4, $5) RETURNING *', [nombre, apellido, carrera, email, foto_user]);
+  const result = await pool.query('INSERT INTO users(nombre, apellido, carrera, email, foto_user) VALUES ($1, $2, $3, $4, $5) RETURNING *', [nombre, apellido, carrera, email, foto_user]);
   console.log("result", result.rows[0]);
   if (result.rowCount === 0) {
     return undefined;
@@ -32,6 +32,15 @@ export async function createUser(nombre, apellido, carrera, email, foto_user) {
 
 export async function deleteUser(id_user) {
   const result = await pool.query('DELETE FROM users WHERE id_user = $1 RETURNING *', [id_user]);
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+  return result.rows[0];
+}
+
+export async function updateUser(id_user, nombre, apellido, carrera, email, foto_user) {
+  const result = await pool.query('UPDATE users SET nombre=$2, apellido=$3, carrera=$4, email=$5, foto_user=$6 WHERE id_user = $1 RETURNING *', [id_user, nombre, apellido, carrera, email, foto_user]);
+  console.log("result", result.rows[0]);
   if (result.rowCount === 0) {
     return undefined;
   }
