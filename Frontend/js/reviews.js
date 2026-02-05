@@ -36,41 +36,33 @@ function cerrarPopupModificarReview(id) {
     }
 }
 
-//function confirmacionEliminarReview(id) {
-//    const confirmar = confirm("¿Estás seguro de que deseas eliminar este review?");
-//    if (confirmar) {
-//        eliminarReview(id);
-//    }
-//}
-function confirmacionEliminarReview(id) {
-    console.log("CLICK eliminar, id:", id);
+function confirmacionEliminarReview(id_review, boton) {
     const confirmar = confirm("¿Estás seguro de que deseas eliminar este review?");
     if (confirmar) {
-        eliminarReview(id);
+        eliminarReview(id_review, boton);
     }
 }
 
-async function eliminarReview(id) {
-    if (!id) return console.error("Error: No hay ID de Review");
+async function eliminarReview(id_review, boton) {
+    if (!id_review) return console.error("Error: No hay ID de Review");
     try {
-        console.log(`Eliminando review ${id}...`);
-        const response = await fetch(`http://localhost:3000/api/reviews/${id}`, {
+        console.log(`Eliminando review ${id_review}...`);
+        const response = await fetch(`http://localhost:3000/api/reviews/${id_review}`, {
             method: 'DELETE'
         });
         if (!response.ok) {
             const data = await response.json();
             throw new Error(data.error || "Error en servidor");
         }
+        const masonryItem = boton.closest(".masonry-item");
+        if (masonryItem) {
+            masonryItem.remove();
+        }
         const review = await response.json();
         console.log("Review eliminada:", review);
-        const reviewElemento = document.getElementById(`review-${id}`);
-        if (reviewElemento) {
-            reviewElemento.remove();
-        }
     } catch (error) {
-        console.error("Fallo eliminar aura:", error);
+        console.error("Fallo eliminar review:", error);
         alert(error.message); 
-        boton.innerText = textoOriginal; 
     }
 }
 
@@ -79,7 +71,7 @@ function renderizarReviews(reviews){
     let htmlAcomulado ='';
     reviews.forEach(review => {
         const cardHTML = `
-            <div class="masonry-item" data-id="${review.id}">
+            <div class="masonry-item" data-id="${review.id_review}">
                 <div class="card">
                     <div class="card-content has-text-centered">
                         <p class="content is-size-6 has-text-black mb-4">
@@ -98,8 +90,8 @@ function renderizarReviews(reviews){
                         </div>
                     </div>
                     <footer class="card-footer">
-                        <a class="card-footer-item button is-white is-small" onclick="confirmacionEliminarReview(${review.id})">Eliminar review</a>
-                        <a class="card-footer-item button is-white is-small" onclick="abrirPopupModificarReview(${review.id})">Modificar review</a>
+                        <a class="card-footer-item button is-white is-small" onclick="confirmacionEliminarReview(${review.id_review}, this)">Eliminar review</a>
+                        <a class="card-footer-item button is-white is-small" onclick="abrirPopupModificarReview(${review.id_review})">Modificar review</a>
                     </footer>
                 </div>
                 <div class="popup-overlay" id="popupOverlayModificarReview${review.id}">
