@@ -1,7 +1,13 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import { pool, getAllUsers, getOneUser, createUser, deleteUser, updateUser, getAllForms, getOneForm, createForm, deleteForm, updateForm, getAllReviews, getOneReview, createReview, deleteReview, updateReview, getReviewsUser} from "./db.js";
 
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -423,6 +429,12 @@ app.put("/api/reviews/:id_review", async (req, res) => {
     }
     res.status(500).json({ error: "Fallo al actualizar review" });
   }
+});
+
+app.use(express.static(path.join(__dirname, '../../Frontend')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../Frontend', 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
