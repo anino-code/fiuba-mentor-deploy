@@ -166,6 +166,49 @@ form.addEventListener('submit', async function(event) {
   }
 });
 
+// Funcion para modificar perfiles
+async function modificarPerfil(id) {
+    const formModificar = document.getElementById(`formModificarPerfil${id}`);
+    if (!formModificar) {
+        return;
+    }
+
+    const nombre = formModificar.Nombre.value;
+    const apellido = formModificar.Apellido.value;
+    const carrera = formModificar.Carrera.value;
+    const email = formModificar.Email.value;
+    const fotoPerfil = formModificar.Foto.value;
+
+    const datos = {
+        nombre,
+        apellido,
+        carrera,
+        email,
+        foto_user: fotoPerfil
+    };
+
+    try {
+        const respuesta = await fetch(`http://localhost:3000/api/users/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(resultado.error || "Error en servidor");
+        }
+        
+    await cargarUsuarios();
+    await cargarCard();
+    cerrarPopupModificarPerfil(id);
+
+    } catch (error) {
+        alert(error.message || "Error al modificar el perfil");
+    }
+}
+
 // Funcion para eliminar perfiles
 async function eliminarPerfil(id) {
     if (!id) {
@@ -175,12 +218,12 @@ async function eliminarPerfil(id) {
     try {
         console.log(`Eliminando perfil ${id}...`);
 
-        const response = await fetch(`http://localhost:3000/api/users/${id}`, {
+        const respuesta = await fetch(`http://localhost:3000/api/users/${id}`, {
             method: 'DELETE'
         });
-        const resultado = await response.json();
+        const resultado = await respuesta.json();
 
-        if (!response.ok) {
+        if (!respuesta.ok) {
             throw new Error(resultado.error || "Error en servidor");
         }
 
