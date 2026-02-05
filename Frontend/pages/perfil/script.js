@@ -9,7 +9,7 @@ const form = document.getElementById('formCrearPerfil');
 async function cargarUsuarios() {
     
     try {
-        const respuesta = await fetch("http://localhost:3000/api/users");
+        const respuesta = await fetch("/api/users");
         perfilesDisponibles = await respuesta.json();
     } catch (error) {
         console.error("Error al cargar usuarios:", error);
@@ -20,9 +20,9 @@ async function cargarUsuarios() {
 async function cargarCard() {
 
     try{
-    cardContainer.innerHTML = '<p>Cargando datos del servidor simulado...</p>';
+    cardContainer.innerHTML = '<p>Cargando datos del servidor ...</p>';
 
-    const response = await fetch('http://localhost:3000/api/users');
+    const response = await fetch('/api/users');
 
 
     if(!response.ok){
@@ -141,7 +141,7 @@ form.addEventListener('submit', async function(event) {
     };
 
     try {
-    const respuesta = await fetch('http://localhost:3000/api/users', {
+    const respuesta = await fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datos)
@@ -188,7 +188,7 @@ async function modificarPerfil(id) {
     };
 
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/users/${id}`, {
+        const respuesta = await fetch(`/api/users/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datos)
@@ -218,7 +218,7 @@ async function eliminarPerfil(id) {
     try {
         console.log(`Eliminando perfil ${id}...`);
 
-        const respuesta = await fetch(`http://localhost:3000/api/users/${id}`, {
+        const respuesta = await fetch(`/api/users/${id}`, {
             method: 'DELETE'
         });
         const resultado = await respuesta.json();

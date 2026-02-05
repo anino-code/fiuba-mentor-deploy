@@ -14,7 +14,7 @@ function contieneLetra(texto) {
 // Cargar usuarios desde el backend
 async function cargarUsuarios() {
   try {
-    const respuesta = await fetch("http://localhost:3000/api/users");
+    const respuesta = await fetch("/api/users");
     usuariosDisponibles = await respuesta.json();
   } catch (error) {
     console.error("Error al cargar usuarios:", error);
@@ -50,7 +50,7 @@ form.addEventListener('submit', async function(event) {
   };
 
   try {
-    const respuesta = await fetch('http://localhost:3000/api/forms', {
+    const respuesta = await fetch('/api/forms', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(datos)
@@ -111,9 +111,9 @@ function renderizarSugerencias(lista) {
   lista.forEach(usuario => {
     html += `
       <a class="custom-dropdown-item" 
-         onclick="seleccionarUsuario('${usuario.id_user}', '${usuario.nombre}')">
-         <div class="sugerencia-nombre">${usuario.nombre}</div>
-         <div class="sugerencia-email">${usuario.email}</div>
+          onclick="seleccionarUsuario('${usuario.id_user}', '${usuario.nombre}')">
+          <div class="sugerencia-nombre">${usuario.nombre}</div>
+          <div class="sugerencia-email">${usuario.email}</div>
       </a>
     `;
   });
