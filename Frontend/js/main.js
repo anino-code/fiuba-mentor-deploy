@@ -6,7 +6,7 @@ async function cargarCard() {
     try{
     cardContainer.innerHTML = '<p>Cargando datos del servidor ...</p>';
 
-    const response = await fetch('http://localhost:3000/api/forms?t=' + Date.now());
+    const response = await fetch('/api/forms?t=' + Date.now());
 
     if(!response.ok){
         throw new Error('No se pudo conectar con el servidor');
@@ -64,7 +64,7 @@ async function manejarContacto(idUsuario) {
         if(modalNombre) modalNombre.textContent = "Buscando mentor...";
         if(modalEmail) modalEmail.textContent = "...";
 
-        const response = await fetch(`http://localhost:3000/api/users/${idUsuario}`);
+        const response = await fetch(`/api/users/${idUsuario}`);
 
         
         if (!response.ok) {
@@ -115,7 +115,7 @@ async function manejarAura(idUsuario, boton) {
     try {
         console.log(` Sumando aura al usuario ${idUsuario}...`);
 
-        const response = await fetch('http://localhost:3000/api/reviews', {
+        const response = await fetch('/api/reviews', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
