@@ -433,7 +433,7 @@ app.put("/api/reviews/:id_review", async (req, res) => {
 
 app.use(express.static(path.join(__dirname, '../../Frontend')));
 
-app.get('*', (req, res) => {
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, '../../Frontend', 'index.html'));
 });
 
